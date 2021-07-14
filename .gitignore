@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+id_rsa*
 
 # C extensions
 *.so
