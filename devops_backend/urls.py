@@ -19,7 +19,8 @@ from django.contrib import admin
 from django.urls import path
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
-from utils.sso_auth.views import obtain_jwt_token
+from utils.sso_auth.views import obtain_jwt_token as sso_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token
 from devops_backend import settings
 from .router import route
 
@@ -28,6 +29,7 @@ urlpatterns = [
     path('', include(route.urls)),
     path('docs/', include_docs_urls("自动化平台")),
     path('api-auth/', include("rest_framework.urls", namespace='rest_framework')),
-    path('api-auth-token/', obtain_jwt_token),
+    path('api-auth-token/', sso_jwt_token),
+    path('token/', obtain_jwt_token),
     re_path('^media/(?P<path>.*)$', serve, {"document_root":settings.MEDIA_ROOT})
 ]

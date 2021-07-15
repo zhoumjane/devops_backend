@@ -245,9 +245,9 @@ JWT_AUTH = {
 
 
 # sso jwt settings
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'utils.sso_auth.authentication.SSOJSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ),
