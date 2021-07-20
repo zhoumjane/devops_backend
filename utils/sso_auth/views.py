@@ -66,7 +66,7 @@ class JSONWebTokenAPIView(APIView):
         username = payload.get('username')
 
         if not username:
-            msg = _('Invalid payload.')
+            msg = ('Invalid payload.')
             raise exceptions.AuthenticationFailed(msg)
 
         try:
@@ -76,21 +76,20 @@ class JSONWebTokenAPIView(APIView):
             user = User.objects.create(username=username, email=email)
 
         if not user.is_active:
-            msg = _('User account is disabled.')
+            msg = ('User account is disabled.')
             raise exceptions.AuthenticationFailed(msg)
 
         return user
 
     def get(self, request, *args, **kwargs):
             id_token = request.query_params.get('id_token', None)
-            print(id_token)
             try:
                 payload = jwt_sso_decode_handler(id_token)
             except jwt.ExpiredSignatureError:
-                msg = _('Signature has expired.')
+                msg = ('Signature has expired.')
                 raise exceptions.AuthenticationFailed(msg)
             except jwt.DecodeError:
-                msg = _('Error decoding signature.')
+                msg = ('Error decoding signature.')
                 raise exceptions.AuthenticationFailed(msg)
             except jwt.InvalidTokenError:
                 raise exceptions.AuthenticationFailed()
@@ -108,6 +107,26 @@ class JSONWebTokenAPIView(APIView):
                                     httponly=True)
 
             return response
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+            payload = {"username": user.username}
+            payload['exp'] = datetime.utcnow() + timedelta(days=1)
+            token = jwt_encode_handler(payload)
+            response_data = jwt_response_payload_handler(token, user, request)
+            response = Response(response_data)
+            if api_settings.JWT_AUTH_COOKIE:
+                expiration = (datetime.utcnow() +
+                              api_settings.JWT_EXPIRATION_DELTA)
+                response.set_cookie(api_settings.JWT_AUTH_COOKIE,
+                                    token,
+                                    expires=expiration,
+                                    httponly=True)
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ObtainJSONWebToken(JSONWebTokenAPIView):
