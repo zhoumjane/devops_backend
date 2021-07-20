@@ -169,13 +169,13 @@ DIR_PATH = "/data/"
 
 
 #email
-EMAIL_HOST = '...'
+EMAIL_HOST = 'zhoumjane@163.com'
 EMAIL_PORT = 587
-EMAIL_TO = '...'
-EMAIL_HOST_PASSWORD = '...'
+EMAIL_TO = 'zhoumjane@163.com'
+EMAIL_HOST_PASSWORD = 'zhoumjane@163.com'
 EMAIL_USE_SSL = False
-EMAIL_FROM = '...'
-DOMAIN = "@yunpan.com"
+EMAIL_FROM = 'zhoumjane@163.com'
+DOMAIN = "@163.com"
 
 # redis cache settings
 
@@ -247,8 +247,8 @@ JWT_AUTH = {
 # sso jwt settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'utils.sso_auth.authentication.SSOJSONWebTokenAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ),
     'DEFAULT_THROTTLE_CLASSES': (

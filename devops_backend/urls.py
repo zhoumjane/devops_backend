@@ -30,6 +30,5 @@ urlpatterns = [
     path('docs/', include_docs_urls("自动化平台")),
     path('api-auth/', include("rest_framework.urls", namespace='rest_framework')),
     path('api-auth-token/', sso_jwt_token),
-    path('token/', obtain_jwt_token),
     re_path('^media/(?P<path>.*)$', serve, {"document_root":settings.MEDIA_ROOT})
 ]
