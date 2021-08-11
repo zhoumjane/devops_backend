@@ -23,6 +23,7 @@ from utils.sso_auth.views import obtain_jwt_token as sso_jwt_token
 from rest_framework_jwt.views import obtain_jwt_token
 from devops_backend import settings
 from .router import route
+from apps.sshchan import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +31,7 @@ urlpatterns = [
     path('docs/', include_docs_urls("自动化平台")),
     path('api-auth/', include("rest_framework.urls", namespace='rest_framework')),
     path('api-auth-token/', sso_jwt_token),
+    path('webssh/', views.index),
+    path('upload_ssh_key/', views.upload_ssh_key),
     re_path('^media/(?P<path>.*)$', serve, {"document_root":settings.MEDIA_ROOT})
 ]

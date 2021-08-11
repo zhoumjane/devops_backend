@@ -18,6 +18,10 @@ from django.core.files.storage import Storage
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,os.path.join(BASE_DIR, "apps"))
+TMP_DIR = os.path.join(BASE_DIR, 'tmp')
+
+if not os.path.isdir(TMP_DIR):
+    os.makedirs(TMP_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -44,11 +48,13 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'celery',
+    'channels',
     'django_celery_results',
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
     'servers.apps.ServersConfig',
-    'images.apps.ImagesConfig'
+    'images.apps.ImagesConfig',
+    'sshchan.apps.SshchanConfig'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ASGI_APPLICATION = 'sshchan.urls.application'
 
 ROOT_URLCONF = 'devops_backend.urls'
 
@@ -140,14 +148,14 @@ AUTHENTICATION_BACKENDS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/statics/'
+STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static_all')
 STATIC_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static_all"),
+    os.path.join(BASE_DIR, "static"),
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
