@@ -1,16 +1,16 @@
 function get_connect_info() {
-    var host = $.trim($('#host').val());
-    var port = $.trim($('#port').val());
-    var user = $.trim($('#user').val());
-    var auth = $("input[name='auth']:checked").val();
-    var pwd = $.trim($('#password').val());
-    var password = window.btoa(pwd);
-    var ssh_key = null;
+    let host = $.trim($('#host').val());
+    let port = $.trim($('#port').val());
+    let user = $.trim($('#user').val());
+    let auth = $("input[name='auth']:checked").val();
+    let pwd = $.trim($('#password').val());
+    let password = window.btoa(pwd);
+    let ssh_key = null;
 
     if (auth === 'key') {
-        var pkey = $('#pkey')[0].files[0];
-        var csrf = $("[name='csrfmiddlewaretoken']").val();
-        var formData = new FormData();
+        let pkey = $('#pkey')[0].files[0];
+        let csrf = $("[name='csrfmiddlewaretoken']").val();
+        let formData = new FormData();
 
         formData.append('pkey', pkey);
         formData.append('csrfmiddlewaretoken', csrf);
@@ -29,19 +29,19 @@ function get_connect_info() {
         });
     }
 
-    var connect_info1 = 'host=' + host + '&port=' + port + '&user=' + user + '&auth=' + auth;
-    var connect_info2 = '&password=' + password + '&ssh_key=' + ssh_key;
-    var connect_info = connect_info1 + connect_info2;
+    let connect_info1 = 'host=' + host + '&port=' + port + '&user=' + user + '&auth=' + auth;
+    let connect_info2 = '&password=' + password + '&ssh_key=' + ssh_key;
+    let connect_info = connect_info1 + connect_info2;
     return connect_info
 }
 
 
 function get_term_size() {
-    var init_width = 9;
-    var init_height = 17;
+    let init_width = 9;
+    let init_height = 17;
 
-    var windows_width = $(window).width();
-    var windows_height = $(window).height();
+    let windows_width = $(window).width();
+    let windows_height = $(window).height();
 
     return {
         cols: Math.floor(windows_width / init_width),
@@ -50,11 +50,11 @@ function get_term_size() {
 }
 
 function websocket() {
-    var cols = get_term_size().cols;
-    var rows = get_term_size().rows;
-    var connect_info = get_connect_info();
+    let cols = get_term_size().cols;
+    let rows = get_term_size().rows;
+    let connect_info = get_connect_info();
 
-    var term = new Terminal(
+    let term = new Terminal(
         {
             cols: cols,
             rows: rows,
@@ -66,7 +66,7 @@ function websocket() {
         socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') +
             '/webssh/?' + connect_info + '&width=' + cols + '&height=' + rows;
 
-    var sock;
+    let sock;
     sock = new WebSocket(socketURL);
     sock.binaryType = "arraybuffer";    // 必须设置，zmodem 才可以使用
 
@@ -193,7 +193,7 @@ function websocket() {
 		return promise;
 	}
 
-     var zsentry = new Zmodem.Sentry( {
+     let zsentry = new Zmodem.Sentry( {
         to_terminal: function(octets) {},  //i.e. send to the terminal
 
         on_detect: function(detection) {
@@ -227,9 +227,9 @@ function websocket() {
     // 读取服务器端发送的数据并写入 web 终端
     sock.addEventListener('message', function (recv) {
         if (typeof(recv.data) === 'string') {
-            var data = JSON.parse(recv.data);
-            var message = data.message;
-            var status = data.status;
+            let data = JSON.parse(recv.data);
+            let message = data.message;
+            let status = data.status;
             if (status === 0) {
                 term.write(message)
             } else {
@@ -238,14 +238,14 @@ function websocket() {
                 term.write(message);
                 $("body").removeAttr("onbeforeunload"); //删除刷新关闭提示属性
 
-                //$(document).keyup(function(event){	// 监听回车按键事件
-                //	if(event.keyCode == 13){
-                        //window.location.reload();
-                //	}
-                //});
-                //term.dispose()
-                //$('#django-webssh-terminal').addClass('hide');
-                //$('#form').removeClass('hide');
+                // $(document).keyup(function(event){	// 监听回车按键事件
+                // 	if(event.keyCode === 13){
+                //         window.location.reload();
+                // 	}
+                // });
+                // term.dispose();
+                // $('#django-webssh-terminal').addClass('hide');
+                // $('#form').removeClass('hide');
             }
         } else {
 		    zsentry.consume(recv.data);
@@ -256,25 +256,38 @@ function websocket() {
     * status 为 0 时, 将用户输入的数据通过 websocket 传递给后台, data 为传递的数据, 忽略 cols 和 rows 参数
     * status 为 1 时, resize pty ssh 终端大小, cols 为每行显示的最大字数, rows 为每列显示的最大字数, 忽略 data 参数
     */
-    var message = {'status': 0, 'data': null, 'cols': null, 'rows': null};
+    let message = {'status': 0, 'data': null, 'cols': null, 'rows': null};
+    let items = [];
 
     // 向服务器端发送数据
     term.onData(function (data) {
+        // if (data !== '\r') {
+        //     items.push(data)
+        // }else {
+        //     items.push(data);
+        //     message['status'] = 0;
+        //     message['data'] = items.join('');
+        //     items = [];
+        //     let send_data = JSON.stringify(message);
+        //     sock.send(send_data);
+        //     console.log(send_data)
+        // }
         message['status'] = 0;
         message['data'] = data;
-        var send_data = JSON.stringify(message);
-        sock.send(send_data)
+        let send_data = JSON.stringify(message);
+        sock.send(send_data);
     });
 
     // 监听浏览器窗口, 根据浏览器窗口大小修改终端大小
     $(window).resize(function () {
-        var cols = get_term_size().cols;
-        var rows = get_term_size().rows;
+        let cols = get_term_size().cols;
+        let rows = get_term_size().rows;
         message['status'] = 1;
         message['cols'] = cols;
         message['rows'] = rows;
-        var send_data = JSON.stringify(message);
+        let send_data = JSON.stringify(message);
         sock.send(send_data);
         term.resize(cols, rows)
     })
 }
+
