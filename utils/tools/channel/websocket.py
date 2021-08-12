@@ -108,3 +108,4 @@ class WebSSH(WebsocketConsumer):
                     cols = data['cols']
                     rows = data['rows']
                     self.ssh.resize_pty(cols=cols, rows=rows)
+

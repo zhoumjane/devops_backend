@@ -72,6 +72,7 @@ class SSH:
             self.channel.send(data)
             if data == '\r':
                 data = '\n'
+                print(self.cmd)
             self.cmd += data
         except Exception:
             self.close()
@@ -131,11 +132,10 @@ class SSH:
         self.channel.close()
 
     def shell(self, data):
-        # 原作者使用创建线程的方式发送数据到ssh，每次发送都是一个字符，可以不用线程
+        # 使用创建线程的方式发送数据到ssh，每次发送都是一个字符，可以不用线程
         # 直接调用函数性能更好
         # Thread(target=self.django_to_ssh, args=(data,)).start()
         self.django_to_ssh(data)
 
-        # 原作者将发送数据到django websocket的线程创建函数如果写到这，会导致每在客户端输入一个字符就创建一个线程
-        # 最终可能导致线程创建太多，故将其写到 connect 函数中
-        # Thread(target=self.websocket_to_django).start()
+
+
