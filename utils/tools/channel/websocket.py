@@ -73,7 +73,7 @@ class WebSSH(WebsocketConsumer):
             string_io.seek(0)
             ssh_connect_dict['ssh_key'] = string_io
 
-            os.remove(ssh_key_file)
+            # os.remove(ssh_key_file)
 
         self.ssh.connect(**ssh_connect_dict)
 
