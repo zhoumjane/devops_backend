@@ -31,7 +31,7 @@ urlpatterns = [
     path('docs/', include_docs_urls("自动化平台")),
     path('api-auth/', include("rest_framework.urls", namespace='rest_framework')),
     path('api-auth-token/', sso_jwt_token),
-    path('webssh/', views.index),
+    path('webssh/', views.IndexViewSet.as_view({'get': 'list'})),
     path('upload_ssh_key/', views.upload_ssh_key),
     re_path('^media/(?P<path>.*)$', serve, {"document_root":settings.MEDIA_ROOT})
 ]

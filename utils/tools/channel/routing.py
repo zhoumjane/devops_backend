@@ -6,3 +6,4 @@ from utils.tools.channel import websocket
 websocket_urlpatterns = [
     path('webssh/', websocket.WebSSH),
 ]
+
