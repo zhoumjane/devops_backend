@@ -32,7 +32,20 @@ class IndexViewSet(viewsets.ViewSet, mixins.ListModelMixin):
             Server.objects.filter(ip=ip_addr)
         except Exception as e:
             return Response({"permission": False}, status=status.HTTP_400_BAD_REQUEST)
-        return render(request, 'index.html')
+        try:
+            port = self.request.query_params['port']
+        except Exception as e:
+            port = '22'
+        try:
+            user = self.request.query_params['user']
+        except Exception as e:
+            user = 'root'
+        content = {
+            'host': ip_addr,
+            'port': port,
+            'user': user
+        }
+        return render(request, 'index.html', content)
 
 def upload_ssh_key(request):
     if request.method == 'POST':

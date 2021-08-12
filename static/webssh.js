@@ -2,32 +2,33 @@ function get_connect_info() {
     let host = $.trim($('#host').val());
     let port = $.trim($('#port').val());
     let user = $.trim($('#user').val());
-    let auth = $("input[name='auth']:checked").val();
+    // let auth = $("input[name='auth']:checked").val();
+    let auth = 'key';
     let pwd = $.trim($('#password').val());
     let password = window.btoa(pwd);
-    let ssh_key = null;
+    let ssh_key = 'id_rsa.pub';
 
-    if (auth === 'key') {
-        let pkey = $('#pkey')[0].files[0];
-        let csrf = $("[name='csrfmiddlewaretoken']").val();
-        let formData = new FormData();
-
-        formData.append('pkey', pkey);
-        formData.append('csrfmiddlewaretoken', csrf);
-
-        $.ajax({
-            url: '/upload_ssh_key/',
-            type: 'post',
-            data: formData,
-            async: false,
-            processData: false,
-            contentType: false,
-            mimeType: 'multipart/form-data',
-            success: function (data) {
-                ssh_key = data;
-            }
-        });
-    }
+    // if (auth === 'key') {
+    //     let pkey = $('#pkey')[0].files[0];
+    //     let csrf = $("[name='csrfmiddlewaretoken']").val();
+    //     let formData = new FormData();
+    //
+    //     formData.append('pkey', pkey);
+    //     formData.append('csrfmiddlewaretoken', csrf);
+    //
+    //     $.ajax({
+    //         url: '/upload_ssh_key/',
+    //         type: 'post',
+    //         data: formData,
+    //         async: false,
+    //         processData: false,
+    //         contentType: false,
+    //         mimeType: 'multipart/form-data',
+    //         success: function (data) {
+    //             ssh_key = data;
+    //         }
+    //     });
+    // }
 
     let connect_info1 = 'host=' + host + '&port=' + port + '&user=' + user + '&auth=' + auth;
     let connect_info2 = '&password=' + password + '&ssh_key=' + ssh_key;

@@ -6,6 +6,7 @@ from utils.tools.tools import get_key_obj
 import traceback
 import socket
 import json
+import os
 
 zmodemszstart = b'rz\r**\x18B00000000000000\r\x8a'
 zmodemszend = b'**\x18B0800000000022d\r\x8a'
@@ -13,6 +14,7 @@ zmodemrzstart = b'rz waiting to receive.**\x18B0100000023be50\r\x8a'
 zmodemrzend = b'**\x18B0800000000022d\r\x8a'
 zmodemcancel = b'\x18\x18\x18\x18\x18\x08\x08\x08\x08\x08'
 
+PRIVATE_KEY_FILE = os.path.dirname(os.path.abspath(__file__)) + "/id_rsa"
 
 class SSH:
     def __init__(self, websocker, message):
@@ -35,8 +37,9 @@ class SSH:
                       get_key_obj(paramiko.DSSKey, pkey_obj=ssh_key, password=password) or \
                       get_key_obj(paramiko.ECDSAKey, pkey_obj=ssh_key, password=password) or \
                       get_key_obj(paramiko.Ed25519Key, pkey_obj=ssh_key, password=password)
+                private_key = paramiko.RSAKey.from_private_key_file(PRIVATE_KEY_FILE)
 
-                ssh_client.connect(username=user, hostname=host, port=port, pkey=key, timeout=timeout)
+                ssh_client.connect(username=user, hostname=host, port=port, pkey=private_key, timeout=timeout)
             else:
                 ssh_client.connect(username=user, password=password, hostname=host, port=port, timeout=timeout)
 
