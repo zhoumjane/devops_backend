@@ -44,13 +44,15 @@ class WebSSH(WebsocketConsumer):
 
         host = ssh_args.get('host')
         user = ssh_args.get('user')
+        current_user = ssh_args.get('current_user')
+        remote_addr = ssh_args.get('remote_addr')
 
         if passwd:
             passwd = base64.b64decode(passwd).decode('utf-8')
         else:
             passwd = None
 
-        self.ssh = SSH(websocker=self, message=self.message)
+        self.ssh = SSH(websocker=self, message=self.message, current_user=current_user, host=host, remote_addr=remote_addr)
 
         ssh_connect_dict = {
             'host': host,

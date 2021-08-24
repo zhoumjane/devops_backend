@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'celery',
     'channels',
-    'django_celery_results',
+    'utils.djorm_pool',
+    # 'django_celery_results',
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
     'servers.apps.ServersConfig',
@@ -97,6 +98,7 @@ WSGI_APPLICATION = 'devops_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'db_pool.mysql',
         'NAME': 'devops',
         'USER': 'root',
         'PASSWORD': 'zmj930826',
@@ -108,6 +110,13 @@ DATABASES = {
     }
 }
 
+
+# database conn pool
+DJORM_POOL_OPTIONS = {
+    "pool_size": 3,
+    "max_overflow": 0,
+    "recycle": 3600
+}
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -164,7 +173,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 # celery settings
 
 BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = 'redis://:password@localhost:6379/0'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['application/json',]
@@ -267,3 +277,9 @@ REST_FRAMEWORK = {
         'anon': '100/minute'
     }
 }
+
+# upload file size
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440000  #上传文件大小，改成2500M
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440000        #上传数据大小，也改成了2500M
+
+

@@ -7,6 +7,10 @@ import traceback
 import socket
 import json
 import os
+import logging
+import time
+
+logging.basicConfig(level=logging.INFO)
 
 zmodemszstart = b'rz\r**\x18B00000000000000\r\x8a'
 zmodemszend = b'**\x18B0800000000022d\r\x8a'
@@ -17,11 +21,14 @@ zmodemcancel = b'\x18\x18\x18\x18\x18\x08\x08\x08\x08\x08'
 PRIVATE_KEY_FILE = os.path.dirname(os.path.abspath(__file__)) + "/id_rsa"
 
 class SSH:
-    def __init__(self, websocker, message):
+    def __init__(self, websocker, message, current_user, host, remote_addr):
         self.websocker = websocker
         self.message = message
         self.cmd = ''
         self.res = ''
+        self.current_user = current_user
+        self.host = host
+        self.remote_addr = remote_addr
         self.zmodem = False
         self.zmodemOO = False
 
@@ -74,8 +81,11 @@ class SSH:
         try:
             self.channel.send(data)
             if data == '\r':
-                data = '\n'
-                print(self.cmd)
+                data = ''
+                if self.cmd != '\n':
+                    current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                    logging.info("  time: {}, src_host: {}, dest_host: {}, current_user: {}, command: {}".format(current_time, self.remote_addr, self.host, self.current_user, self.cmd))
+                self.cmd = ''
             self.cmd += data
         except Exception:
             self.close()
