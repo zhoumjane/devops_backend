@@ -43,13 +43,16 @@ class PermissionCheck(viewsets.ViewSet, mixins.ListModelMixin):
 
     def list(self, request, *args, **kwargs):
 
-        ip_addr = self.request.query_params['ip']
+        try:
+            ip_addr = self.request.query_params['ip']
+        except Exception as e:
+            return Response({"err": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         permission_str = 'servers.login_' + ip_addr
         if not (self.request.user.has_perm('servers.login_server') or self.request.user.has_perm(permission_str)):
             return Response({"permission": False}, status=status.HTTP_403_FORBIDDEN)
         try:
             Server.objects.get(ip=ip_addr)
         except Exception as e:
-            return Response({"permission": False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"permission": False, "err": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         data = {"permisson": True}
         return Response(data, status=status.HTTP_200_OK)

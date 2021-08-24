@@ -2,6 +2,8 @@ function get_connect_info() {
     let host = $.trim($('#host').val());
     let port = $.trim($('#port').val());
     let user = $.trim($('#user').val());
+    let current_user = $.trim($('#current_user').val());
+    let remote_addr = $.trim($('#remote_addr').val());
     // let auth = $("input[name='auth']:checked").val();
     let auth = 'key';
     let pwd = $.trim($('#password').val());
@@ -30,7 +32,7 @@ function get_connect_info() {
     //     });
     // }
 
-    let connect_info1 = 'host=' + host + '&port=' + port + '&user=' + user + '&auth=' + auth;
+    let connect_info1 = 'host=' + host + '&port=' + port + '&user=' + user + '&auth=' + auth + '&current_user=' + current_user + '&remote_addr=' + remote_addr;
     let connect_info2 = '&password=' + password + '&ssh_key=' + ssh_key;
     let connect_info = connect_info1 + connect_info2;
     return connect_info

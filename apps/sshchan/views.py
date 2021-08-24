@@ -20,6 +20,7 @@ class IndexViewSet(viewsets.ViewSet, mixins.ListModelMixin):
     permission_classes = (IsAuthenticated, )
 
     def list(self, request, *args, **kwargs):
+        remote_addr = self.request.META.get('HTTP_X_FORWARD_FOR') if self.request.META.get('HTTP_X_FORWARD_FOR') else self.request.META.get('REMOTE_ADDR')
         try:
             ip_addr = self.request.query_params['ip']
         except:
@@ -28,7 +29,6 @@ class IndexViewSet(viewsets.ViewSet, mixins.ListModelMixin):
         if not (self.request.user.has_perm('servers.login_server') or self.request.user.has_perm(permission_str)):
             return Response({"permission": False}, status=status.HTTP_403_FORBIDDEN)
         try:
-            print(ip_addr)
             Server.objects.filter(ip=ip_addr)
         except Exception as e:
             return Response({"permission": False}, status=status.HTTP_400_BAD_REQUEST)
@@ -43,7 +43,9 @@ class IndexViewSet(viewsets.ViewSet, mixins.ListModelMixin):
         content = {
             'host': ip_addr,
             'port': port,
-            'user': user
+            'user': user,
+            'current_user': self.request.user,
+            'remote_addr': remote_addr
         }
         return render(request, 'index.html', content)
 

@@ -20,7 +20,7 @@ from django.urls import path
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from utils.sso_auth.views import obtain_jwt_token as sso_jwt_token
-from rest_framework_jwt.views import obtain_jwt_token
+# from rest_framework_jwt.views import obtain_jwt_token
 from devops_backend import settings
 from .router import route
 from apps.sshchan import views
