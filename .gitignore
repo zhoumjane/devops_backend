@@ -10,6 +10,7 @@ id_rsa*
 # Distribution / packaging
 .Python
 build/
+script/
 develop-eggs/
 dist/
 downloads/
