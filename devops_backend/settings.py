@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'groups.apps.GroupsConfig',
     'servers.apps.ServersConfig',
     'images.apps.ImagesConfig',
-    'sshchan.apps.SshchanConfig'
+    'sshchan.apps.SshchanConfig',
+    'k8s.apps.K8SConfig'
 ]
 
 MIDDLEWARE = [
